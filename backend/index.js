@@ -15,9 +15,20 @@ import { app, server } from "./socket/socket.js"
 const port=process.env.PORT || 5000
 
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Allow configured origins
+        }
+    },
+    credentials: true
 }))
 app.use(express.json())
 app.use(cookieParser())
